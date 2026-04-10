@@ -1,0 +1,40 @@
+[workspace]
+members = [
+    "programs/strata-core",
+    "programs/strata-token"
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+authors = ["Dhruv"]
+license = "MIT"
+publish = false
+edition = "2021"
+
+[workspace.dependencies]
+anchor-lang = "0.32.1"
+encrypt-anchor = { path = "vendor/encrypt-pre-alpha/chains/solana/program-sdk/anchor" }
+encrypt-types = { path = "vendor/encrypt-pre-alpha/crates/encrypt-types" }
+encrypt-dsl = { path = "vendor/encrypt-pre-alpha/crates/encrypt-dsl" }
+encrypt-dsl-macros = { path = "vendor/encrypt-pre-alpha/crates/encrypt-dsl/macros" }
+encrypt-dsl-compile = { path = "vendor/encrypt-pre-alpha/crates/encrypt-dsl-compile" }
+encrypt-solana-types = { path = "vendor/encrypt-pre-alpha/chains/solana/program-sdk/types" }
+encrypt-solana-dsl = { path = "vendor/encrypt-pre-alpha/chains/solana/program-sdk/dsl" }
+encrypt-solana-dsl-macros = { path = "vendor/encrypt-pre-alpha/chains/solana/program-sdk/dsl/macros" }
+bcs = "0.1"
+serde = { version = "1", default-features = false, features = ["derive", "alloc"] }
+syn = { version = "2", features = ["full"] }
+quote = "1"
+proc-macro2 = "1"
+trybuild = "1"
+
+[profile.release]
+overflow-checks = true
+lto = "fat"
+codegen-units = 1
+
+[profile.release.build-override]
+opt-level = 3
+incremental = false
+codegen-units = 1

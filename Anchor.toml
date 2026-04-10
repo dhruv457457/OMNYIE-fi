@@ -1,0 +1,24 @@
+[toolchain]
+package_manager = "yarn"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.devnet]
+strata_core = "Gu9BtKAQ7dHZhig9Z3aESR9hR7xcWTjjGeAN6bHZCBvX"
+strata_token = "BHEacctLwvbEs8NSDEUC8AGPDCK3VvTrXL6snkvV3uzn"
+
+[programs.localnet]
+strata_core = "STRATxN3hR5gMmfK2mHF4pkP8Kz1GqfAzPxvEBKpump"
+strata_token = "STRTKNx7yFz5sM8W4aBvPxUNjwhc6GhtZ3vReed1ump"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "devnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 \"tests/**/*.ts\""
