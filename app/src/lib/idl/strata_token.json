@@ -1,0 +1,391 @@
+{
+  "address": "BHEacctLwvbEs8NSDEUC8AGPDCK3VvTrXL6snkvV3uzn",
+  "metadata": {
+    "name": "strata_token",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Strata Finance - Tranche Token Manager (Token-2022)"
+  },
+  "instructions": [
+    {
+      "name": "burn_tranche",
+      "docs": [
+        "Burn tranche tokens from a user (called on withdrawal)"
+      ],
+      "discriminator": [
+        79,
+        66,
+        17,
+        38,
+        229,
+        134,
+        18,
+        169
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "docs": [
+            "User burning their tranche tokens"
+          ],
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  97,
+                  110,
+                  99,
+                  104,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "tranche_mint",
+          "docs": [
+            "Tranche mint to burn from"
+          ],
+          "writable": true
+        },
+        {
+          "name": "user_tranche_account",
+          "docs": [
+            "User's tranche token account"
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "tranche_type",
+          "type": {
+            "defined": {
+              "name": "TrancheType"
+            }
+          }
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initialize_mints",
+      "docs": [
+        "Initialize srUSDC and jrUSDC mints"
+      ],
+      "discriminator": [
+        189,
+        84,
+        85,
+        142,
+        177,
+        200,
+        57,
+        22
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  97,
+                  110,
+                  99,
+                  104,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "sr_mint",
+          "docs": [
+            "Senior tranche token mint (srUSDC)"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  114,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "jr_mint",
+          "docs": [
+            "Junior tranche token mint (jrUSDC)"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  114,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "core_program",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "mint_tranche",
+      "docs": [
+        "Mint tranche tokens to a user (called after deposit)"
+      ],
+      "discriminator": [
+        36,
+        124,
+        24,
+        199,
+        60,
+        98,
+        12,
+        142
+      ],
+      "accounts": [
+        {
+          "name": "caller",
+          "docs": [
+            "Can be the core program PDA or the authority"
+          ],
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  97,
+                  110,
+                  99,
+                  104,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "tranche_mint",
+          "docs": [
+            "Mint to use (sr_mint or jr_mint based on tranche_type)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "user_tranche_account",
+          "docs": [
+            "User's tranche token account"
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "tranche_type",
+          "type": {
+            "defined": {
+              "name": "TrancheType"
+            }
+          }
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "TrancheTokenConfig",
+      "discriminator": [
+        157,
+        104,
+        197,
+        217,
+        218,
+        196,
+        187,
+        223
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "Unauthorized: caller is not the core program or authority"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidTrancheType",
+      "msg": "Invalid tranche type"
+    },
+    {
+      "code": 6002,
+      "name": "ZeroAmount",
+      "msg": "Amount must be greater than zero"
+    }
+  ],
+  "types": [
+    {
+      "name": "TrancheTokenConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Protocol authority"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "sr_mint",
+            "docs": [
+              "Senior tranche mint (srUSDC)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "jr_mint",
+            "docs": [
+              "Junior tranche mint (jrUSDC)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "core_program",
+            "docs": [
+              "strata_core program ID (authorized to request mints/burns)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "sr_total_supply",
+            "docs": [
+              "Total srUSDC minted"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "jr_total_supply",
+            "docs": [
+              "Total jrUSDC minted"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TrancheType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Senior"
+          },
+          {
+            "name": "Junior"
+          }
+        ]
+      }
+    }
+  ]
+}

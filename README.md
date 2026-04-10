@@ -24,8 +24,8 @@ Depositors
 
 1. **Choose Your Risk** - Senior = fixed yield, Junior = leveraged variable yield
 2. **Deposit USDC** - Into an epoch (7/14/30 day periods). USDC is deployed to yield sources (Kamino vaults)
-3. **Settle Privately** - Deposit size is mirrored into an Encrypt ciphertext account for private withdrawal settlement
-4. **Collect Returns** - When the epoch matures, Senior gets paid first at the fixed rate, Junior gets everything remaining
+3. **Mirror Privately** - Deposit size is mirrored into an Encrypt ciphertext account for private claim UX and privacy-preserving balance workflows
+4. **Collect Returns Safely** - When the epoch matures, users can always withdraw principal + yield through the protocol; Encrypt decryption is an optional privacy enhancement, not the only exit path
 
 ---
 
@@ -46,9 +46,9 @@ Depositors
 - `start_epoch` - Close deposits, begin yield generation
 - `harvest_yield` - Cranker harvests yield from underlying vaults (mock Kamino on devnet)
 - `distribute_yield` - Split harvested yield: senior gets fixed rate, junior gets remainder
-- `withdraw` - Withdraw principal + earned yield after maturity
-- `request_withdraw_decryption` - Request Encrypt decryption for the private claim amount
-- `finalize_withdraw_decryption` - Verify the decrypted digest and settle the withdrawal
+- `withdraw` - Safe fallback withdrawal path for principal + earned yield after maturity
+- `request_withdraw_decryption` - Optional Encrypt decryption request for private claim UX
+- `finalize_withdraw_decryption` - Optional Encrypt-based finalization after the decryptor responds
 
 #### strata_token Instructions
 - `initialize_mints` - Create srUSDC and jrUSDC mints (Token-2022 with extensions)

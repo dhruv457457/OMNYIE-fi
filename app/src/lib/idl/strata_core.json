@@ -1,0 +1,1762 @@
+{
+  "address": "Gu9BtKAQ7dHZhig9Z3aESR9hR7xcWTjjGeAN6bHZCBvX",
+  "metadata": {
+    "name": "strata_core",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Strata Finance - Yield Tranching Protocol"
+  },
+  "instructions": [
+    {
+      "name": "create_epoch",
+      "docs": [
+        "Create a new epoch (yield period)"
+      ],
+      "discriminator": [
+        115,
+        111,
+        36,
+        230,
+        59,
+        145,
+        168,
+        27
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "protocol"
+          ]
+        },
+        {
+          "name": "protocol",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "epoch",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  112,
+                  111,
+                  99,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "protocol"
+              },
+              {
+                "kind": "account",
+                "path": "protocol.epoch_count",
+                "account": "Protocol"
+              }
+            ]
+          }
+        },
+        {
+          "name": "epoch_vault",
+          "docs": [
+            "Epoch-specific USDC vault"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  112,
+                  111,
+                  99,
+                  104,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "epoch"
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "duration",
+          "type": {
+            "defined": {
+              "name": "EpochDuration"
+            }
+          }
+        },
+        {
+          "name": "senior_fixed_rate_bps",
+          "type": "u16"
+        },
+        {
+          "name": "senior_cap",
+          "type": "u64"
+        },
+        {
+          "name": "junior_cap",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "deposit",
+      "docs": [
+        "Deposit USDC into a tranche"
+      ],
+      "discriminator": [
+        242,
+        35,
+        198,
+        137,
+        82,
+        225,
+        242,
+        182
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "protocol",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "epoch",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  112,
+                  111,
+                  99,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "protocol"
+              },
+              {
+                "kind": "account",
+                "path": "epoch.epoch_number",
+                "account": "Epoch"
+              }
+            ]
+          }
+        },
+        {
+          "name": "position",
+          "writable": true
+        },
+        {
+          "name": "deposit_ciphertext",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user_usdc",
+          "docs": [
+            "User's USDC token account"
+          ],
+          "writable": true
+        },
+        {
+          "name": "epoch_vault",
+          "docs": [
+            "Epoch USDC vault"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  112,
+                  111,
+                  99,
+                  104,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "epoch"
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "encrypt_program"
+        },
+        {
+          "name": "encrypt_config"
+        },
+        {
+          "name": "encrypt_deposit",
+          "writable": true
+        },
+        {
+          "name": "encrypt_cpi_authority"
+        },
+        {
+          "name": "caller_program"
+        },
+        {
+          "name": "network_encryption_key"
+        },
+        {
+          "name": "encrypt_event_authority"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "tranche_type",
+          "type": {
+            "defined": {
+              "name": "TrancheType"
+            }
+          }
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "encrypt_cpi_authority_bump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "distribute_yield",
+      "docs": [
+        "Distribute yield between tranches after epoch matures"
+      ],
+      "discriminator": [
+        233,
+        92,
+        186,
+        157,
+        235,
+        238,
+        212,
+        114
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "protocol"
+          ]
+        },
+        {
+          "name": "protocol",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108
+                ]
+              }
+            ]
+          },
+          "relations": [
+            "epoch"
+          ]
+        },
+        {
+          "name": "epoch",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  112,
+                  111,
+                  99,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "protocol"
+              },
+              {
+                "kind": "account",
+                "path": "epoch.epoch_number",
+                "account": "Epoch"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "finalize_withdraw_decryption",
+      "docs": [
+        "Finalize an encrypted withdrawal after the decryption request completes."
+      ],
+      "discriminator": [
+        113,
+        180,
+        172,
+        152,
+        208,
+        74,
+        160,
+        58
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "protocol",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108
+                ]
+              }
+            ]
+          },
+          "relations": [
+            "epoch"
+          ]
+        },
+        {
+          "name": "epoch",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  112,
+                  111,
+                  99,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "protocol"
+              },
+              {
+                "kind": "account",
+                "path": "epoch.epoch_number",
+                "account": "Epoch"
+              }
+            ]
+          },
+          "relations": [
+            "position"
+          ]
+        },
+        {
+          "name": "position",
+          "writable": true
+        },
+        {
+          "name": "user_usdc",
+          "docs": [
+            "User's USDC token account"
+          ],
+          "writable": true
+        },
+        {
+          "name": "epoch_vault",
+          "docs": [
+            "Epoch USDC vault"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  112,
+                  111,
+                  99,
+                  104,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "epoch"
+              }
+            ]
+          }
+        },
+        {
+          "name": "decryption_request",
+          "writable": true
+        },
+        {
+          "name": "encrypt_program"
+        },
+        {
+          "name": "encrypt_config"
+        },
+        {
+          "name": "encrypt_deposit",
+          "writable": true
+        },
+        {
+          "name": "encrypt_cpi_authority"
+        },
+        {
+          "name": "caller_program"
+        },
+        {
+          "name": "network_encryption_key"
+        },
+        {
+          "name": "encrypt_event_authority"
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "encrypt_cpi_authority_bump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "force_mature_epoch",
+      "docs": [
+        "Devnet/demo helper: authority-only fast-forward for testing withdrawal UX.",
+        "Remove or gate this before any production deployment."
+      ],
+      "discriminator": [
+        105,
+        54,
+        253,
+        146,
+        137,
+        140,
+        112,
+        185
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "protocol"
+          ]
+        },
+        {
+          "name": "protocol",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108
+                ]
+              }
+            ]
+          },
+          "relations": [
+            "epoch"
+          ]
+        },
+        {
+          "name": "epoch",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  112,
+                  111,
+                  99,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "protocol"
+              },
+              {
+                "kind": "account",
+                "path": "epoch.epoch_number",
+                "account": "Epoch"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "additional_yield",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "harvest_yield",
+      "docs": [
+        "Harvest yield from underlying protocol (cranker)"
+      ],
+      "discriminator": [
+        28,
+        200,
+        150,
+        200,
+        69,
+        56,
+        38,
+        133
+      ],
+      "accounts": [
+        {
+          "name": "crankaer",
+          "docs": [
+            "Cranker or authority"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "protocol",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108
+                ]
+              }
+            ]
+          },
+          "relations": [
+            "epoch"
+          ]
+        },
+        {
+          "name": "epoch",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  112,
+                  111,
+                  99,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "protocol"
+              },
+              {
+                "kind": "account",
+                "path": "epoch.epoch_number",
+                "account": "Epoch"
+              }
+            ]
+          }
+        },
+        {
+          "name": "epoch_vault",
+          "docs": [
+            "Epoch USDC vault"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  112,
+                  111,
+                  99,
+                  104,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "epoch"
+              }
+            ]
+          }
+        },
+        {
+          "name": "yield_source",
+          "docs": [
+            "Mock yield source vault (in production: Kamino vault)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "yield_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initialize",
+      "docs": [
+        "Initialize the Strata Finance protocol"
+      ],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "protocol",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc_mint",
+          "docs": [
+            "USDC mint"
+          ]
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "Protocol USDC vault to hold deposits"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "treasury",
+          "docs": [
+            "Treasury wallet for fees"
+          ]
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "sr_mint",
+          "type": "pubkey"
+        },
+        {
+          "name": "jr_mint",
+          "type": "pubkey"
+        },
+        {
+          "name": "token_program_id",
+          "type": "pubkey"
+        },
+        {
+          "name": "performance_fee_bps",
+          "type": "u16"
+        },
+        {
+          "name": "early_withdrawal_fee_bps",
+          "type": "u16"
+        },
+        {
+          "name": "insurance_fee_bps",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "request_withdraw_decryption",
+      "docs": [
+        "Request decryption of a private position amount before withdrawal settlement."
+      ],
+      "discriminator": [
+        108,
+        192,
+        112,
+        109,
+        86,
+        58,
+        37,
+        244
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "protocol",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108
+                ]
+              }
+            ]
+          },
+          "relations": [
+            "epoch"
+          ]
+        },
+        {
+          "name": "epoch",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  112,
+                  111,
+                  99,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "protocol"
+              },
+              {
+                "kind": "account",
+                "path": "epoch.epoch_number",
+                "account": "Epoch"
+              }
+            ]
+          },
+          "relations": [
+            "position"
+          ]
+        },
+        {
+          "name": "position",
+          "writable": true
+        },
+        {
+          "name": "decryption_request",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "balance_ciphertext"
+        },
+        {
+          "name": "encrypt_program"
+        },
+        {
+          "name": "encrypt_config"
+        },
+        {
+          "name": "encrypt_deposit",
+          "writable": true
+        },
+        {
+          "name": "encrypt_cpi_authority"
+        },
+        {
+          "name": "caller_program"
+        },
+        {
+          "name": "network_encryption_key"
+        },
+        {
+          "name": "encrypt_event_authority"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "encrypt_cpi_authority_bump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "start_epoch",
+      "docs": [
+        "Start an epoch (close deposits, begin yield generation)"
+      ],
+      "discriminator": [
+        204,
+        248,
+        232,
+        82,
+        251,
+        45,
+        164,
+        113
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "protocol"
+          ]
+        },
+        {
+          "name": "protocol",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108
+                ]
+              }
+            ]
+          },
+          "relations": [
+            "epoch"
+          ]
+        },
+        {
+          "name": "epoch",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  112,
+                  111,
+                  99,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "protocol"
+              },
+              {
+                "kind": "account",
+                "path": "epoch.epoch_number",
+                "account": "Epoch"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "withdraw",
+      "docs": [
+        "Withdraw principal + yield after epoch matures"
+      ],
+      "discriminator": [
+        183,
+        18,
+        70,
+        156,
+        148,
+        109,
+        161,
+        34
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "protocol",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108
+                ]
+              }
+            ]
+          },
+          "relations": [
+            "epoch"
+          ]
+        },
+        {
+          "name": "epoch",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  112,
+                  111,
+                  99,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "protocol"
+              },
+              {
+                "kind": "account",
+                "path": "epoch.epoch_number",
+                "account": "Epoch"
+              }
+            ]
+          },
+          "relations": [
+            "position"
+          ]
+        },
+        {
+          "name": "position",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "relations": [
+            "position"
+          ]
+        },
+        {
+          "name": "user_usdc",
+          "docs": [
+            "User's USDC token account"
+          ],
+          "writable": true
+        },
+        {
+          "name": "epoch_vault",
+          "docs": [
+            "Epoch USDC vault"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  112,
+                  111,
+                  99,
+                  104,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "epoch"
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Epoch",
+      "discriminator": [
+        93,
+        83,
+        120,
+        89,
+        151,
+        138,
+        152,
+        108
+      ]
+    },
+    {
+      "name": "Protocol",
+      "discriminator": [
+        45,
+        39,
+        101,
+        43,
+        115,
+        72,
+        131,
+        40
+      ]
+    },
+    {
+      "name": "UserPosition",
+      "discriminator": [
+        251,
+        248,
+        209,
+        245,
+        83,
+        234,
+        17,
+        27
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "ProtocolPaused",
+      "msg": "Protocol is currently paused"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidEpochStatus",
+      "msg": "Epoch is not in the expected status"
+    },
+    {
+      "code": 6002,
+      "name": "EpochNotMatured",
+      "msg": "Epoch has not matured yet"
+    },
+    {
+      "code": 6003,
+      "name": "DepositWindowClosed",
+      "msg": "Epoch deposit window has closed"
+    },
+    {
+      "code": 6004,
+      "name": "TrancheCapExceeded",
+      "msg": "Deposit exceeds tranche cap"
+    },
+    {
+      "code": 6005,
+      "name": "ZeroDeposit",
+      "msg": "Deposit amount must be greater than zero"
+    },
+    {
+      "code": 6006,
+      "name": "AlreadyWithdrawn",
+      "msg": "Position already withdrawn"
+    },
+    {
+      "code": 6007,
+      "name": "InsufficientYield",
+      "msg": "Insufficient yield to cover senior tranche"
+    },
+    {
+      "code": 6008,
+      "name": "Unauthorized",
+      "msg": "Unauthorized: not the protocol authority"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidFeeConfig",
+      "msg": "Invalid fee configuration"
+    },
+    {
+      "code": 6010,
+      "name": "MathOverflow",
+      "msg": "Math overflow"
+    },
+    {
+      "code": 6011,
+      "name": "NoSeniorDeposits",
+      "msg": "Senior tranche must have deposits before starting epoch"
+    },
+    {
+      "code": 6012,
+      "name": "NoJuniorDeposits",
+      "msg": "Junior tranche must have deposits before starting epoch"
+    },
+    {
+      "code": 6013,
+      "name": "InvalidEncryptAccounts",
+      "msg": "Encrypt accounts are missing or invalid"
+    },
+    {
+      "code": 6014,
+      "name": "MissingEncryptedBalance",
+      "msg": "Position has no encrypted balance"
+    },
+    {
+      "code": 6015,
+      "name": "DecryptionPending",
+      "msg": "Encrypted withdrawal is still pending decryption"
+    },
+    {
+      "code": 6016,
+      "name": "DecryptionNotComplete",
+      "msg": "Decryption result is not complete yet"
+    }
+  ],
+  "types": [
+    {
+      "name": "Epoch",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "protocol",
+            "docs": [
+              "Protocol this epoch belongs to"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "epoch_number",
+            "docs": [
+              "Epoch number (sequential)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "duration",
+            "docs": [
+              "Duration type"
+            ],
+            "type": {
+              "defined": {
+                "name": "EpochDuration"
+              }
+            }
+          },
+          {
+            "name": "status",
+            "docs": [
+              "Current status"
+            ],
+            "type": {
+              "defined": {
+                "name": "EpochStatus"
+              }
+            }
+          },
+          {
+            "name": "senior_fixed_rate_bps",
+            "docs": [
+              "Fixed APY promised to senior tranche (basis points, e.g. 800 = 8%)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "senior_total",
+            "docs": [
+              "Total USDC deposited in senior tranche"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "junior_total",
+            "docs": [
+              "Total USDC deposited in junior tranche"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "senior_cap",
+            "docs": [
+              "Senior tranche deposit cap (0 = no cap)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "junior_cap",
+            "docs": [
+              "Junior tranche deposit cap (0 = no cap)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_yield_harvested",
+            "docs": [
+              "Total yield harvested from underlying protocol"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "senior_yield_distributed",
+            "docs": [
+              "Yield distributed to senior tranche"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "junior_yield_distributed",
+            "docs": [
+              "Yield distributed to junior tranche"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "fees_collected",
+            "docs": [
+              "Platform fees collected"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "insurance_contribution",
+            "docs": [
+              "Insurance fund contribution from this epoch"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "created_at",
+            "docs": [
+              "Timestamp when epoch was created"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "started_at",
+            "docs": [
+              "Timestamp when epoch started (deposits closed, yield starts)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "matures_at",
+            "docs": [
+              "Timestamp when epoch matures"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "vault_address",
+            "docs": [
+              "Underlying yield source vault address"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EpochDuration",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "SevenDays"
+          },
+          {
+            "name": "FourteenDays"
+          },
+          {
+            "name": "ThirtyDays"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EpochStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Open"
+          },
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Matured"
+          },
+          {
+            "name": "Halted"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Protocol",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Authority that can update protocol parameters"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "treasury",
+            "docs": [
+              "Treasury wallet receiving platform fees"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "usdc_mint",
+            "docs": [
+              "USDC mint address"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "sr_mint",
+            "docs": [
+              "Senior tranche token mint (srUSDC)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "jr_mint",
+            "docs": [
+              "Junior tranche token mint (jrUSDC)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "token_program_id",
+            "docs": [
+              "Strata token program (strata_token) ID"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "performance_fee_bps",
+            "docs": [
+              "Performance fee in basis points (500 = 5%)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "early_withdrawal_fee_bps",
+            "docs": [
+              "Early withdrawal fee in basis points (100 = 1%)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "insurance_fee_bps",
+            "docs": [
+              "Insurance fund fee in basis points (50 = 0.5%)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "insurance_fund",
+            "docs": [
+              "Total USDC in insurance fund"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "epoch_count",
+            "docs": [
+              "Total epochs created"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_tvl",
+            "docs": [
+              "Total value locked across all epochs"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "paused",
+            "docs": [
+              "Protocol paused flag"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for PDA"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TrancheType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Senior"
+          },
+          {
+            "name": "Junior"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UserPosition",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "docs": [
+              "The user who owns this position"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "epoch",
+            "docs": [
+              "The epoch this position belongs to"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "tranche_type",
+            "docs": [
+              "Senior or Junior tranche"
+            ],
+            "type": {
+              "defined": {
+                "name": "TrancheType"
+              }
+            }
+          },
+          {
+            "name": "deposited_amount",
+            "docs": [
+              "USDC amount deposited"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "deposit_ciphertext",
+            "docs": [
+              "Encrypt ciphertext account storing the private deposited amount"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "claimable_ciphertext",
+            "docs": [
+              "Encrypt ciphertext account storing a private claimable amount, when available"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "pending_decryption_digest",
+            "docs": [
+              "Digest snapshot returned when decryption is requested"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "pending_decryption_request",
+            "docs": [
+              "Active decryption request account, if any"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "tranche_tokens_minted",
+            "docs": [
+              "Tranche tokens (srUSDC or jrUSDC) minted to user"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "yield_claimed",
+            "docs": [
+              "Yield claimed so far"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "withdrawn",
+            "docs": [
+              "Whether principal has been withdrawn"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "deposited_at",
+            "docs": [
+              "Timestamp of deposit"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "decryption_pending",
+            "docs": [
+              "Whether a decryption request is currently outstanding"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}

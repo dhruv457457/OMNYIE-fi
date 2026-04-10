@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f8f9fb;
+  --foreground: #0a0a0a;
+  --omnyie-red: #C62828;
+  --omnyie-red-dark: #8E0000;
+  --omnyie-red-light: #FF5F52;
+  --omnyie-red-50: #FFEAEA;
+  --omnyie-red-100: #FFCDD2;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-omnyie: var(--omnyie-red);
+  --color-omnyie-dark: var(--omnyie-red-dark);
+  --color-omnyie-light: var(--omnyie-red-light);
+  --color-omnyie-50: var(--omnyie-red-50);
+  --color-omnyie-100: var(--omnyie-red-100);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Override wallet adapter modal styles */
+.wallet-adapter-button {
+  font-family: inherit !important;
+}
+
+.wallet-adapter-modal-wrapper {
+  font-family: inherit !important;
+}
