@@ -4,11 +4,12 @@ pub mod errors;
 pub mod instructions;
 pub mod state;
 pub mod adapters;
+pub mod compute;
 
 use instructions::*;
 use state::*;
 
-declare_id!("Gu9BtKAQ7dHZhig9Z3aESR9hR7xcWTjjGeAN6bHZCBvX");
+declare_id!("3mp3PQySrr9kTWT2SbNSiz57VrSenxAnvTygCkzTY6yJ");
 
 #[program]
 pub mod strata_core {

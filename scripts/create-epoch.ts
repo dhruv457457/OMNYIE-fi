@@ -7,15 +7,15 @@ import * as os from "os";
 import * as path from "path";
 
 const STRATA_CORE_ID = new PublicKey(
-  "Gu9BtKAQ7dHZhig9Z3aESR9hR7xcWTjjGeAN6bHZCBvX"
+  "3mp3PQySrr9kTWT2SbNSiz57VrSenxAnvTygCkzTY6yJ",
 );
 const USDC_MINT = new PublicKey("8a6jsDxNAm51EL1DBZbVwt96VLKnVZWd8ama6TDsMoEk");
 
 const coreIdl = JSON.parse(
   fs.readFileSync(
     path.join(__dirname, "..", "target", "idl", "strata_core.json"),
-    "utf-8"
-  )
+    "utf-8",
+  ),
 );
 
 function loadKeypair(): Keypair {
@@ -64,7 +64,7 @@ async function main() {
   const program = new Program(coreIdl as any, provider);
   const [protocolPDA] = PublicKey.findProgramAddressSync(
     [Buffer.from("protocol")],
-    STRATA_CORE_ID
+    STRATA_CORE_ID,
   );
   const protocol = await (program.account as any).protocol.fetch(protocolPDA);
   const epochNumber = protocol.epochCount as BN;
@@ -74,11 +74,11 @@ async function main() {
       protocolPDA.toBuffer(),
       epochNumber.toArrayLike(Buffer, "le", 8),
     ],
-    STRATA_CORE_ID
+    STRATA_CORE_ID,
   );
   const [epochVault] = PublicKey.findProgramAddressSync(
     [Buffer.from("epoch_vault"), epochPDA.toBuffer()],
-    STRATA_CORE_ID
+    STRATA_CORE_ID,
   );
 
   console.log("Creating epoch", epochNumber.toNumber());

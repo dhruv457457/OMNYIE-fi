@@ -1,5 +1,5 @@
 {
-  "address": "Gu9BtKAQ7dHZhig9Z3aESR9hR7xcWTjjGeAN6bHZCBvX",
+  "address": "3mp3PQySrr9kTWT2SbNSiz57VrSenxAnvTygCkzTY6yJ",
   "metadata": {
     "name": "strata_core",
     "version": "0.1.0",
@@ -9,27 +9,14 @@
   "instructions": [
     {
       "name": "create_epoch",
-      "docs": [
-        "Create a new epoch (yield period)"
-      ],
-      "discriminator": [
-        115,
-        111,
-        36,
-        230,
-        59,
-        145,
-        168,
-        27
-      ],
+      "docs": ["Create a new epoch (yield period)"],
+      "discriminator": [115, 111, 36, 230, 59, 145, 168, 27],
       "accounts": [
         {
           "name": "authority",
           "writable": true,
           "signer": true,
-          "relations": [
-            "protocol"
-          ]
+          "relations": ["protocol"]
         },
         {
           "name": "protocol",
@@ -38,16 +25,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  112,
-                  114,
-                  111,
-                  116,
-                  111,
-                  99,
-                  111,
-                  108
-                ]
+                "value": [112, 114, 111, 116, 111, 99, 111, 108]
               }
             ]
           }
@@ -59,13 +37,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  101,
-                  112,
-                  111,
-                  99,
-                  104
-                ]
+                "value": [101, 112, 111, 99, 104]
               },
               {
                 "kind": "account",
@@ -81,27 +53,13 @@
         },
         {
           "name": "epoch_vault",
-          "docs": [
-            "Epoch-specific USDC vault"
-          ],
+          "docs": ["Epoch-specific USDC vault"],
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  101,
-                  112,
-                  111,
-                  99,
-                  104,
-                  95,
-                  118,
-                  97,
-                  117,
-                  108,
-                  116
-                ]
+                "value": [101, 112, 111, 99, 104, 95, 118, 97, 117, 108, 116]
               },
               {
                 "kind": "account",
@@ -146,19 +104,8 @@
     },
     {
       "name": "deposit",
-      "docs": [
-        "Deposit USDC into a tranche"
-      ],
-      "discriminator": [
-        242,
-        35,
-        198,
-        137,
-        82,
-        225,
-        242,
-        182
-      ],
+      "docs": ["Deposit USDC into a tranche"],
+      "discriminator": [242, 35, 198, 137, 82, 225, 242, 182],
       "accounts": [
         {
           "name": "user",
@@ -171,16 +118,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  112,
-                  114,
-                  111,
-                  116,
-                  111,
-                  99,
-                  111,
-                  108
-                ]
+                "value": [112, 114, 111, 116, 111, 99, 111, 108]
               }
             ]
           }
@@ -192,13 +130,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  101,
-                  112,
-                  111,
-                  99,
-                  104
-                ]
+                "value": [101, 112, 111, 99, 104]
               },
               {
                 "kind": "account",
@@ -223,34 +155,18 @@
         },
         {
           "name": "user_usdc",
-          "docs": [
-            "User's USDC token account"
-          ],
+          "docs": ["User's USDC token account"],
           "writable": true
         },
         {
           "name": "epoch_vault",
-          "docs": [
-            "Epoch USDC vault"
-          ],
+          "docs": ["Epoch USDC vault"],
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  101,
-                  112,
-                  111,
-                  99,
-                  104,
-                  95,
-                  118,
-                  97,
-                  117,
-                  108,
-                  116
-                ]
+                "value": [101, 112, 111, 99, 104, 95, 118, 97, 117, 108, 116]
               },
               {
                 "kind": "account",
@@ -313,27 +229,14 @@
     },
     {
       "name": "distribute_yield",
-      "docs": [
-        "Distribute yield between tranches after epoch matures"
-      ],
-      "discriminator": [
-        233,
-        92,
-        186,
-        157,
-        235,
-        238,
-        212,
-        114
-      ],
+      "docs": ["Distribute yield between tranches after epoch matures"],
+      "discriminator": [233, 92, 186, 157, 235, 238, 212, 114],
       "accounts": [
         {
           "name": "authority",
           "writable": true,
           "signer": true,
-          "relations": [
-            "protocol"
-          ]
+          "relations": ["protocol"]
         },
         {
           "name": "protocol",
@@ -342,22 +245,11 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  112,
-                  114,
-                  111,
-                  116,
-                  111,
-                  99,
-                  111,
-                  108
-                ]
+                "value": [112, 114, 111, 116, 111, 99, 111, 108]
               }
             ]
           },
-          "relations": [
-            "epoch"
-          ]
+          "relations": ["epoch"]
         },
         {
           "name": "epoch",
@@ -366,13 +258,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  101,
-                  112,
-                  111,
-                  99,
-                  104
-                ]
+                "value": [101, 112, 111, 99, 104]
               },
               {
                 "kind": "account",
@@ -394,16 +280,7 @@
       "docs": [
         "Finalize an encrypted withdrawal after the decryption request completes."
       ],
-      "discriminator": [
-        113,
-        180,
-        172,
-        152,
-        208,
-        74,
-        160,
-        58
-      ],
+      "discriminator": [113, 180, 172, 152, 208, 74, 160, 58],
       "accounts": [
         {
           "name": "user",
@@ -416,22 +293,11 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  112,
-                  114,
-                  111,
-                  116,
-                  111,
-                  99,
-                  111,
-                  108
-                ]
+                "value": [112, 114, 111, 116, 111, 99, 111, 108]
               }
             ]
           },
-          "relations": [
-            "epoch"
-          ]
+          "relations": ["epoch"]
         },
         {
           "name": "epoch",
@@ -439,13 +305,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  101,
-                  112,
-                  111,
-                  99,
-                  104
-                ]
+                "value": [101, 112, 111, 99, 104]
               },
               {
                 "kind": "account",
@@ -458,9 +318,7 @@
               }
             ]
           },
-          "relations": [
-            "position"
-          ]
+          "relations": ["position"]
         },
         {
           "name": "position",
@@ -468,34 +326,18 @@
         },
         {
           "name": "user_usdc",
-          "docs": [
-            "User's USDC token account"
-          ],
+          "docs": ["User's USDC token account"],
           "writable": true
         },
         {
           "name": "epoch_vault",
-          "docs": [
-            "Epoch USDC vault"
-          ],
+          "docs": ["Epoch USDC vault"],
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  101,
-                  112,
-                  111,
-                  99,
-                  104,
-                  95,
-                  118,
-                  97,
-                  117,
-                  108,
-                  116
-                ]
+                "value": [101, 112, 111, 99, 104, 95, 118, 97, 117, 108, 116]
               },
               {
                 "kind": "account",
@@ -554,24 +396,13 @@
         "Devnet/demo helper: authority-only fast-forward for testing withdrawal UX.",
         "Remove or gate this before any production deployment."
       ],
-      "discriminator": [
-        105,
-        54,
-        253,
-        146,
-        137,
-        140,
-        112,
-        185
-      ],
+      "discriminator": [105, 54, 253, 146, 137, 140, 112, 185],
       "accounts": [
         {
           "name": "authority",
           "writable": true,
           "signer": true,
-          "relations": [
-            "protocol"
-          ]
+          "relations": ["protocol"]
         },
         {
           "name": "protocol",
@@ -580,22 +411,11 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  112,
-                  114,
-                  111,
-                  116,
-                  111,
-                  99,
-                  111,
-                  108
-                ]
+                "value": [112, 114, 111, 116, 111, 99, 111, 108]
               }
             ]
           },
-          "relations": [
-            "epoch"
-          ]
+          "relations": ["epoch"]
         },
         {
           "name": "epoch",
@@ -604,13 +424,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  101,
-                  112,
-                  111,
-                  99,
-                  104
-                ]
+                "value": [101, 112, 111, 99, 104]
               },
               {
                 "kind": "account",
@@ -634,25 +448,12 @@
     },
     {
       "name": "harvest_yield",
-      "docs": [
-        "Harvest yield from underlying protocol (cranker)"
-      ],
-      "discriminator": [
-        28,
-        200,
-        150,
-        200,
-        69,
-        56,
-        38,
-        133
-      ],
+      "docs": ["Harvest yield from underlying protocol (cranker)"],
+      "discriminator": [28, 200, 150, 200, 69, 56, 38, 133],
       "accounts": [
         {
           "name": "crankaer",
-          "docs": [
-            "Cranker or authority"
-          ],
+          "docs": ["Cranker or authority"],
           "writable": true,
           "signer": true
         },
@@ -662,22 +463,11 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  112,
-                  114,
-                  111,
-                  116,
-                  111,
-                  99,
-                  111,
-                  108
-                ]
+                "value": [112, 114, 111, 116, 111, 99, 111, 108]
               }
             ]
           },
-          "relations": [
-            "epoch"
-          ]
+          "relations": ["epoch"]
         },
         {
           "name": "epoch",
@@ -686,13 +476,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  101,
-                  112,
-                  111,
-                  99,
-                  104
-                ]
+                "value": [101, 112, 111, 99, 104]
               },
               {
                 "kind": "account",
@@ -708,27 +492,13 @@
         },
         {
           "name": "epoch_vault",
-          "docs": [
-            "Epoch USDC vault"
-          ],
+          "docs": ["Epoch USDC vault"],
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  101,
-                  112,
-                  111,
-                  99,
-                  104,
-                  95,
-                  118,
-                  97,
-                  117,
-                  108,
-                  116
-                ]
+                "value": [101, 112, 111, 99, 104, 95, 118, 97, 117, 108, 116]
               },
               {
                 "kind": "account",
@@ -739,9 +509,7 @@
         },
         {
           "name": "yield_source",
-          "docs": [
-            "Mock yield source vault (in production: Kamino vault)"
-          ],
+          "docs": ["Mock yield source vault (in production: Kamino vault)"],
           "writable": true
         },
         {
@@ -760,19 +528,8 @@
     },
     {
       "name": "initialize",
-      "docs": [
-        "Initialize the Strata Finance protocol"
-      ],
-      "discriminator": [
-        175,
-        175,
-        109,
-        31,
-        13,
-        152,
-        155,
-        237
-      ],
+      "docs": ["Initialize the Strata Finance protocol"],
+      "discriminator": [175, 175, 109, 31, 13, 152, 155, 237],
       "accounts": [
         {
           "name": "authority",
@@ -786,65 +543,35 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  112,
-                  114,
-                  111,
-                  116,
-                  111,
-                  99,
-                  111,
-                  108
-                ]
+                "value": [112, 114, 111, 116, 111, 99, 111, 108]
               }
             ]
           }
         },
         {
           "name": "usdc_mint",
-          "docs": [
-            "USDC mint"
-          ]
+          "docs": ["USDC mint"]
         },
         {
           "name": "vault",
-          "docs": [
-            "Protocol USDC vault to hold deposits"
-          ],
+          "docs": ["Protocol USDC vault to hold deposits"],
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  118,
-                  97,
-                  117,
-                  108,
-                  116
-                ]
+                "value": [118, 97, 117, 108, 116]
               },
               {
                 "kind": "const",
-                "value": [
-                  112,
-                  114,
-                  111,
-                  116,
-                  111,
-                  99,
-                  111,
-                  108
-                ]
+                "value": [112, 114, 111, 116, 111, 99, 111, 108]
               }
             ]
           }
         },
         {
           "name": "treasury",
-          "docs": [
-            "Treasury wallet for fees"
-          ]
+          "docs": ["Treasury wallet for fees"]
         },
         {
           "name": "token_program"
@@ -886,16 +613,7 @@
       "docs": [
         "Request decryption of a private position amount before withdrawal settlement."
       ],
-      "discriminator": [
-        108,
-        192,
-        112,
-        109,
-        86,
-        58,
-        37,
-        244
-      ],
+      "discriminator": [108, 192, 112, 109, 86, 58, 37, 244],
       "accounts": [
         {
           "name": "user",
@@ -908,22 +626,11 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  112,
-                  114,
-                  111,
-                  116,
-                  111,
-                  99,
-                  111,
-                  108
-                ]
+                "value": [112, 114, 111, 116, 111, 99, 111, 108]
               }
             ]
           },
-          "relations": [
-            "epoch"
-          ]
+          "relations": ["epoch"]
         },
         {
           "name": "epoch",
@@ -931,13 +638,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  101,
-                  112,
-                  111,
-                  99,
-                  104
-                ]
+                "value": [101, 112, 111, 99, 104]
               },
               {
                 "kind": "account",
@@ -950,9 +651,7 @@
               }
             ]
           },
-          "relations": [
-            "position"
-          ]
+          "relations": ["position"]
         },
         {
           "name": "position",
@@ -1002,27 +701,14 @@
     },
     {
       "name": "start_epoch",
-      "docs": [
-        "Start an epoch (close deposits, begin yield generation)"
-      ],
-      "discriminator": [
-        204,
-        248,
-        232,
-        82,
-        251,
-        45,
-        164,
-        113
-      ],
+      "docs": ["Start an epoch (close deposits, begin yield generation)"],
+      "discriminator": [204, 248, 232, 82, 251, 45, 164, 113],
       "accounts": [
         {
           "name": "authority",
           "writable": true,
           "signer": true,
-          "relations": [
-            "protocol"
-          ]
+          "relations": ["protocol"]
         },
         {
           "name": "protocol",
@@ -1030,22 +716,11 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  112,
-                  114,
-                  111,
-                  116,
-                  111,
-                  99,
-                  111,
-                  108
-                ]
+                "value": [112, 114, 111, 116, 111, 99, 111, 108]
               }
             ]
           },
-          "relations": [
-            "epoch"
-          ]
+          "relations": ["epoch"]
         },
         {
           "name": "epoch",
@@ -1054,13 +729,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  101,
-                  112,
-                  111,
-                  99,
-                  104
-                ]
+                "value": [101, 112, 111, 99, 104]
               },
               {
                 "kind": "account",
@@ -1079,19 +748,8 @@
     },
     {
       "name": "withdraw",
-      "docs": [
-        "Withdraw principal + yield after epoch matures"
-      ],
-      "discriminator": [
-        183,
-        18,
-        70,
-        156,
-        148,
-        109,
-        161,
-        34
-      ],
+      "docs": ["Withdraw principal + yield after epoch matures"],
+      "discriminator": [183, 18, 70, 156, 148, 109, 161, 34],
       "accounts": [
         {
           "name": "user",
@@ -1104,22 +762,11 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  112,
-                  114,
-                  111,
-                  116,
-                  111,
-                  99,
-                  111,
-                  108
-                ]
+                "value": [112, 114, 111, 116, 111, 99, 111, 108]
               }
             ]
           },
-          "relations": [
-            "epoch"
-          ]
+          "relations": ["epoch"]
         },
         {
           "name": "epoch",
@@ -1127,13 +774,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  101,
-                  112,
-                  111,
-                  99,
-                  104
-                ]
+                "value": [101, 112, 111, 99, 104]
               },
               {
                 "kind": "account",
@@ -1146,9 +787,7 @@
               }
             ]
           },
-          "relations": [
-            "position"
-          ]
+          "relations": ["position"]
         },
         {
           "name": "position",
@@ -1156,40 +795,22 @@
         },
         {
           "name": "owner",
-          "relations": [
-            "position"
-          ]
+          "relations": ["position"]
         },
         {
           "name": "user_usdc",
-          "docs": [
-            "User's USDC token account"
-          ],
+          "docs": ["User's USDC token account"],
           "writable": true
         },
         {
           "name": "epoch_vault",
-          "docs": [
-            "Epoch USDC vault"
-          ],
+          "docs": ["Epoch USDC vault"],
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  101,
-                  112,
-                  111,
-                  99,
-                  104,
-                  95,
-                  118,
-                  97,
-                  117,
-                  108,
-                  116
-                ]
+                "value": [101, 112, 111, 99, 104, 95, 118, 97, 117, 108, 116]
               },
               {
                 "kind": "account",
@@ -1211,42 +832,15 @@
   "accounts": [
     {
       "name": "Epoch",
-      "discriminator": [
-        93,
-        83,
-        120,
-        89,
-        151,
-        138,
-        152,
-        108
-      ]
+      "discriminator": [93, 83, 120, 89, 151, 138, 152, 108]
     },
     {
       "name": "Protocol",
-      "discriminator": [
-        45,
-        39,
-        101,
-        43,
-        115,
-        72,
-        131,
-        40
-      ]
+      "discriminator": [45, 39, 101, 43, 115, 72, 131, 40]
     },
     {
       "name": "UserPosition",
-      "discriminator": [
-        251,
-        248,
-        209,
-        245,
-        83,
-        234,
-        17,
-        27
-      ]
+      "discriminator": [251, 248, 209, 245, 83, 234, 17, 27]
     }
   ],
   "errors": [
@@ -1344,23 +938,17 @@
         "fields": [
           {
             "name": "protocol",
-            "docs": [
-              "Protocol this epoch belongs to"
-            ],
+            "docs": ["Protocol this epoch belongs to"],
             "type": "pubkey"
           },
           {
             "name": "epoch_number",
-            "docs": [
-              "Epoch number (sequential)"
-            ],
+            "docs": ["Epoch number (sequential)"],
             "type": "u64"
           },
           {
             "name": "duration",
-            "docs": [
-              "Duration type"
-            ],
+            "docs": ["Duration type"],
             "type": {
               "defined": {
                 "name": "EpochDuration"
@@ -1369,9 +957,7 @@
           },
           {
             "name": "status",
-            "docs": [
-              "Current status"
-            ],
+            "docs": ["Current status"],
             "type": {
               "defined": {
                 "name": "EpochStatus"
@@ -1387,72 +973,52 @@
           },
           {
             "name": "senior_total",
-            "docs": [
-              "Total USDC deposited in senior tranche"
-            ],
+            "docs": ["Total USDC deposited in senior tranche"],
             "type": "u64"
           },
           {
             "name": "junior_total",
-            "docs": [
-              "Total USDC deposited in junior tranche"
-            ],
+            "docs": ["Total USDC deposited in junior tranche"],
             "type": "u64"
           },
           {
             "name": "senior_cap",
-            "docs": [
-              "Senior tranche deposit cap (0 = no cap)"
-            ],
+            "docs": ["Senior tranche deposit cap (0 = no cap)"],
             "type": "u64"
           },
           {
             "name": "junior_cap",
-            "docs": [
-              "Junior tranche deposit cap (0 = no cap)"
-            ],
+            "docs": ["Junior tranche deposit cap (0 = no cap)"],
             "type": "u64"
           },
           {
             "name": "total_yield_harvested",
-            "docs": [
-              "Total yield harvested from underlying protocol"
-            ],
+            "docs": ["Total yield harvested from underlying protocol"],
             "type": "u64"
           },
           {
             "name": "senior_yield_distributed",
-            "docs": [
-              "Yield distributed to senior tranche"
-            ],
+            "docs": ["Yield distributed to senior tranche"],
             "type": "u64"
           },
           {
             "name": "junior_yield_distributed",
-            "docs": [
-              "Yield distributed to junior tranche"
-            ],
+            "docs": ["Yield distributed to junior tranche"],
             "type": "u64"
           },
           {
             "name": "fees_collected",
-            "docs": [
-              "Platform fees collected"
-            ],
+            "docs": ["Platform fees collected"],
             "type": "u64"
           },
           {
             "name": "insurance_contribution",
-            "docs": [
-              "Insurance fund contribution from this epoch"
-            ],
+            "docs": ["Insurance fund contribution from this epoch"],
             "type": "u64"
           },
           {
             "name": "created_at",
-            "docs": [
-              "Timestamp when epoch was created"
-            ],
+            "docs": ["Timestamp when epoch was created"],
             "type": "i64"
           },
           {
@@ -1464,23 +1030,17 @@
           },
           {
             "name": "matures_at",
-            "docs": [
-              "Timestamp when epoch matures"
-            ],
+            "docs": ["Timestamp when epoch matures"],
             "type": "i64"
           },
           {
             "name": "vault_address",
-            "docs": [
-              "Underlying yield source vault address"
-            ],
+            "docs": ["Underlying yield source vault address"],
             "type": "pubkey"
           },
           {
             "name": "bump",
-            "docs": [
-              "Bump seed"
-            ],
+            "docs": ["Bump seed"],
             "type": "u8"
           }
         ]
@@ -1530,100 +1090,72 @@
         "fields": [
           {
             "name": "authority",
-            "docs": [
-              "Authority that can update protocol parameters"
-            ],
+            "docs": ["Authority that can update protocol parameters"],
             "type": "pubkey"
           },
           {
             "name": "treasury",
-            "docs": [
-              "Treasury wallet receiving platform fees"
-            ],
+            "docs": ["Treasury wallet receiving platform fees"],
             "type": "pubkey"
           },
           {
             "name": "usdc_mint",
-            "docs": [
-              "USDC mint address"
-            ],
+            "docs": ["USDC mint address"],
             "type": "pubkey"
           },
           {
             "name": "sr_mint",
-            "docs": [
-              "Senior tranche token mint (srUSDC)"
-            ],
+            "docs": ["Senior tranche token mint (srUSDC)"],
             "type": "pubkey"
           },
           {
             "name": "jr_mint",
-            "docs": [
-              "Junior tranche token mint (jrUSDC)"
-            ],
+            "docs": ["Junior tranche token mint (jrUSDC)"],
             "type": "pubkey"
           },
           {
             "name": "token_program_id",
-            "docs": [
-              "Strata token program (strata_token) ID"
-            ],
+            "docs": ["Strata token program (strata_token) ID"],
             "type": "pubkey"
           },
           {
             "name": "performance_fee_bps",
-            "docs": [
-              "Performance fee in basis points (500 = 5%)"
-            ],
+            "docs": ["Performance fee in basis points (500 = 5%)"],
             "type": "u16"
           },
           {
             "name": "early_withdrawal_fee_bps",
-            "docs": [
-              "Early withdrawal fee in basis points (100 = 1%)"
-            ],
+            "docs": ["Early withdrawal fee in basis points (100 = 1%)"],
             "type": "u16"
           },
           {
             "name": "insurance_fee_bps",
-            "docs": [
-              "Insurance fund fee in basis points (50 = 0.5%)"
-            ],
+            "docs": ["Insurance fund fee in basis points (50 = 0.5%)"],
             "type": "u16"
           },
           {
             "name": "insurance_fund",
-            "docs": [
-              "Total USDC in insurance fund"
-            ],
+            "docs": ["Total USDC in insurance fund"],
             "type": "u64"
           },
           {
             "name": "epoch_count",
-            "docs": [
-              "Total epochs created"
-            ],
+            "docs": ["Total epochs created"],
             "type": "u64"
           },
           {
             "name": "total_tvl",
-            "docs": [
-              "Total value locked across all epochs"
-            ],
+            "docs": ["Total value locked across all epochs"],
             "type": "u64"
           },
           {
             "name": "paused",
-            "docs": [
-              "Protocol paused flag"
-            ],
+            "docs": ["Protocol paused flag"],
             "type": "bool"
           },
           {
             "name": "bump",
-            "docs": [
-              "Bump seed for PDA"
-            ],
+            "docs": ["Bump seed for PDA"],
             "type": "u8"
           }
         ]
@@ -1650,23 +1182,17 @@
         "fields": [
           {
             "name": "owner",
-            "docs": [
-              "The user who owns this position"
-            ],
+            "docs": ["The user who owns this position"],
             "type": "pubkey"
           },
           {
             "name": "epoch",
-            "docs": [
-              "The epoch this position belongs to"
-            ],
+            "docs": ["The epoch this position belongs to"],
             "type": "pubkey"
           },
           {
             "name": "tranche_type",
-            "docs": [
-              "Senior or Junior tranche"
-            ],
+            "docs": ["Senior or Junior tranche"],
             "type": {
               "defined": {
                 "name": "TrancheType"
@@ -1675,9 +1201,7 @@
           },
           {
             "name": "deposited_amount",
-            "docs": [
-              "USDC amount deposited"
-            ],
+            "docs": ["USDC amount deposited"],
             "type": "u64"
           },
           {
@@ -1696,63 +1220,44 @@
           },
           {
             "name": "pending_decryption_digest",
-            "docs": [
-              "Digest snapshot returned when decryption is requested"
-            ],
+            "docs": ["Digest snapshot returned when decryption is requested"],
             "type": {
-              "array": [
-                "u8",
-                32
-              ]
+              "array": ["u8", 32]
             }
           },
           {
             "name": "pending_decryption_request",
-            "docs": [
-              "Active decryption request account, if any"
-            ],
+            "docs": ["Active decryption request account, if any"],
             "type": "pubkey"
           },
           {
             "name": "tranche_tokens_minted",
-            "docs": [
-              "Tranche tokens (srUSDC or jrUSDC) minted to user"
-            ],
+            "docs": ["Tranche tokens (srUSDC or jrUSDC) minted to user"],
             "type": "u64"
           },
           {
             "name": "yield_claimed",
-            "docs": [
-              "Yield claimed so far"
-            ],
+            "docs": ["Yield claimed so far"],
             "type": "u64"
           },
           {
             "name": "withdrawn",
-            "docs": [
-              "Whether principal has been withdrawn"
-            ],
+            "docs": ["Whether principal has been withdrawn"],
             "type": "bool"
           },
           {
             "name": "deposited_at",
-            "docs": [
-              "Timestamp of deposit"
-            ],
+            "docs": ["Timestamp of deposit"],
             "type": "i64"
           },
           {
             "name": "decryption_pending",
-            "docs": [
-              "Whether a decryption request is currently outstanding"
-            ],
+            "docs": ["Whether a decryption request is currently outstanding"],
             "type": "bool"
           },
           {
             "name": "bump",
-            "docs": [
-              "Bump seed"
-            ],
+            "docs": ["Bump seed"],
             "type": "u8"
           }
         ]

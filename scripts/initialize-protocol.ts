@@ -33,24 +33,24 @@ import * as path from "path";
 
 // Program IDs (from Anchor.toml)
 const STRATA_CORE_ID = new PublicKey(
-  "Gu9BtKAQ7dHZhig9Z3aESR9hR7xcWTjjGeAN6bHZCBvX"
+  "3mp3PQySrr9kTWT2SbNSiz57VrSenxAnvTygCkzTY6yJ",
 );
 const STRATA_TOKEN_ID = new PublicKey(
-  "BHEacctLwvbEs8NSDEUC8AGPDCK3VvTrXL6snkvV3uzn"
+  "BHEacctLwvbEs8NSDEUC8AGPDCK3VvTrXL6snkvV3uzn",
 );
 
 // Load IDLs
 const coreIdl = JSON.parse(
   fs.readFileSync(
     path.join(__dirname, "..", "target", "idl", "strata_core.json"),
-    "utf-8"
-  )
+    "utf-8",
+  ),
 );
 const tokenIdl = JSON.parse(
   fs.readFileSync(
     path.join(__dirname, "..", "target", "idl", "strata_token.json"),
-    "utf-8"
-  )
+    "utf-8",
+  ),
 );
 
 // Load wallet keypair
@@ -88,7 +88,7 @@ async function main() {
     console.log("Requesting airdrop...");
     const sig = await connection.requestAirdrop(
       keypair.publicKey,
-      2 * LAMPORTS_PER_SOL
+      2 * LAMPORTS_PER_SOL,
     );
     await connection.confirmTransaction(sig, "confirmed");
     console.log("Airdrop received!");
@@ -110,7 +110,7 @@ async function main() {
     6, // decimals
     Keypair.generate(),
     undefined,
-    TOKEN_PROGRAM_ID
+    TOKEN_PROGRAM_ID,
   );
   console.log(`USDC Mint: ${usdcMint.toBase58()}`);
 
@@ -119,7 +119,7 @@ async function main() {
     connection,
     keypair,
     usdcMint,
-    keypair.publicKey
+    keypair.publicKey,
   );
   await mintTo(
     connection,
@@ -127,7 +127,7 @@ async function main() {
     usdcMint,
     authorityUsdcAccount.address,
     keypair,
-    100_000 * 1e6 // 100K USDC
+    100_000 * 1e6, // 100K USDC
   );
   console.log(`Minted 100,000 test USDC to authority`);
 
@@ -139,15 +139,15 @@ async function main() {
   // PDAs for strata_token
   const [configPDA] = PublicKey.findProgramAddressSync(
     [Buffer.from("tranche_config")],
-    STRATA_TOKEN_ID
+    STRATA_TOKEN_ID,
   );
   const [srMintPDA] = PublicKey.findProgramAddressSync(
     [Buffer.from("sr_mint")],
-    STRATA_TOKEN_ID
+    STRATA_TOKEN_ID,
   );
   const [jrMintPDA] = PublicKey.findProgramAddressSync(
     [Buffer.from("jr_mint")],
-    STRATA_TOKEN_ID
+    STRATA_TOKEN_ID,
   );
 
   console.log(`Config PDA: ${configPDA.toBase58()}`);
@@ -180,11 +180,11 @@ async function main() {
 
   const [protocolPDA] = PublicKey.findProgramAddressSync(
     [Buffer.from("protocol")],
-    STRATA_CORE_ID
+    STRATA_CORE_ID,
   );
   const [vaultPDA] = PublicKey.findProgramAddressSync(
     [Buffer.from("vault"), Buffer.from("protocol")],
-    STRATA_CORE_ID
+    STRATA_CORE_ID,
   );
 
   console.log(`Protocol PDA: ${protocolPDA.toBase58()}`);
@@ -201,7 +201,7 @@ async function main() {
         STRATA_TOKEN_ID, // token_program_id (strata_token)
         500, // performance_fee_bps (5%)
         100, // early_withdrawal_fee_bps (1%)
-        50 // insurance_fee_bps (0.5%)
+        50, // insurance_fee_bps (0.5%)
       )
       .accounts({
         authority: keypair.publicKey,
@@ -247,7 +247,7 @@ async function main() {
 
   // Get current epoch count
   const protocolData = await (coreProgram.account as any).protocol.fetch(
-    protocolPDA
+    protocolPDA,
   );
   let currentEpochCount = (protocolData.epochCount as BN).toNumber();
   console.log(`Current epoch count: ${currentEpochCount}`);
@@ -260,11 +260,11 @@ async function main() {
         protocolPDA.toBuffer(),
         epochNumber.toArrayLike(Buffer, "le", 8),
       ],
-      STRATA_CORE_ID
+      STRATA_CORE_ID,
     );
     const [epochVault] = PublicKey.findProgramAddressSync(
       [Buffer.from("epoch_vault"), epochPDA.toBuffer()],
-      STRATA_CORE_ID
+      STRATA_CORE_ID,
     );
 
     // Check if already exists
@@ -280,7 +280,7 @@ async function main() {
         config.duration,
         config.seniorRateBps,
         config.seniorCap,
-        config.juniorCap
+        config.juniorCap,
       )
       .accounts({
         authority: keypair.publicKey,
@@ -294,7 +294,7 @@ async function main() {
       .rpc();
 
     console.log(
-      `Created Epoch #${currentEpochCount} (${config.label}) - TX: ${tx}`
+      `Created Epoch #${currentEpochCount} (${config.label}) - TX: ${tx}`,
     );
     currentEpochCount++;
   }
@@ -311,9 +311,7 @@ async function main() {
   console.log(`Token Config PDA: ${configPDA.toBase58()}`);
   console.log(`Total Epochs:     ${currentEpochCount}`);
   console.log("");
-  console.log(
-    "Update your app/.env.local with the USDC mint if needed:"
-  );
+  console.log("Update your app/.env.local with the USDC mint if needed:");
   console.log(`NEXT_PUBLIC_USDC_MINT=${usdcMint.toBase58()}`);
 }
 

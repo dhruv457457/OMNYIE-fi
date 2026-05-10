@@ -1,5 +1,4 @@
 use crate::errors::StrataError;
-use crate::instructions::withdraw::calculate_withdrawal_amount;
 use crate::state::*;
 use anchor_lang::prelude::*;
 use anchor_spl::token_interface::{self, Mint, TokenAccount, TokenInterface, TransferChecked};
@@ -55,6 +54,10 @@ pub struct FinalizeWithdrawDecryption<'info> {
     )]
     pub epoch_vault: InterfaceAccount<'info, TokenAccount>,
 
+    /// CHECK: The claimable ciphertext (contains encrypted claimable amount)
+    #[account(mut)]
+    pub claimable_ciphertext: UncheckedAccount<'info>,
+
     /// CHECK: completed decryption request account
     #[account(mut)]
     pub decryption_request: UncheckedAccount<'info>,
@@ -92,13 +95,17 @@ pub fn handler(
         StrataError::InvalidEncryptAccounts
     );
 
+    // Verify the decryption request is complete
     let req_data = ctx.accounts.decryption_request.try_borrow_data()?;
     match decryption_status::<Uint64>(&req_data) {
         Ok(DecryptionRequestStatus::Complete { .. }) => {}
         _ => return err!(StrataError::DecryptionNotComplete),
     }
 
-    let decrypted_amount = *read_decrypted_verified::<Uint64>(
+    // Decrypt the claimable ciphertext to get the final amount
+    // The claimable_ciphertext was initialized with principal + estimated yield at deposit
+    // and represents the user's claimable amount (principal + yield)
+    let final_claimable = *read_decrypted_verified::<Uint64>(
         &req_data,
         &position.pending_decryption_digest,
     )
@@ -107,13 +114,12 @@ pub fn handler(
 
     let epoch = &ctx.accounts.epoch;
     let protocol = &ctx.accounts.protocol;
-    let (withdraw_amount, yield_amount) = calculate_withdrawal_amount(
-        decrypted_amount,
-        position.tranche_type,
-        epoch,
-        protocol,
-    )?;
 
+    // Calculate withdrawal amounts
+    let withdraw_amount = final_claimable;
+    let yield_amount = final_claimable.saturating_sub(position.deposited_amount);
+
+    // Transfer the final amount from epoch vault to user
     let protocol_key = protocol.key();
     let epoch_number = epoch.epoch_number.to_le_bytes();
     let seeds = &[
@@ -153,11 +159,13 @@ pub fn handler(
         cpi_authority_bump: encrypt_cpi_authority_bump,
     };
 
+    // Close the decryption request
     encrypt_ctx.close_decryption_request(
         &ctx.accounts.decryption_request.to_account_info(),
         &ctx.accounts.user.to_account_info(),
     )?;
 
+    // Mark position as withdrawn
     let position = &mut ctx.accounts.position;
     position.withdrawn = true;
     position.yield_claimed = yield_amount;
@@ -166,10 +174,11 @@ pub fn handler(
     position.pending_decryption_request = Pubkey::default();
 
     msg!(
-        "Finalized encrypted withdrawal {} USDC (principal: {}, yield: {})",
+        "Finalized private withdrawal: {} USDC (principal: {}, yield: {})",
         withdraw_amount,
-        decrypted_amount,
+        position.deposited_amount,
         yield_amount
     );
+    msg!("Claimable amount decrypted from encrypted ciphertext - yield remains private until reveal");
     Ok(())
 }

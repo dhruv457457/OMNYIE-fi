@@ -1,5 +1,15 @@
-import { Connection, Keypair, PublicKey, Transaction, sendAndConfirmTransaction } from "@solana/web3.js";
-import { TOKEN_2022_PROGRAM_ID, getAssociatedTokenAddressSync, createAssociatedTokenAccountInstruction } from "@solana/spl-token";
+import {
+  Connection,
+  Keypair,
+  PublicKey,
+  Transaction,
+  sendAndConfirmTransaction,
+} from "@solana/web3.js";
+import {
+  TOKEN_2022_PROGRAM_ID,
+  getAssociatedTokenAddressSync,
+  createAssociatedTokenAccountInstruction,
+} from "@solana/spl-token";
 import { Program, AnchorProvider, Wallet, BN } from "@coral-xyz/anchor";
 import * as fs from "fs";
 import * as path from "path";
@@ -7,29 +17,49 @@ import * as os from "os";
 
 const connection = new Connection(
   "https://devnet.helius-rpc.com/?api-key=cfaf8792-740e-4149-b248-6f698f7a5c51",
-  "confirmed"
+  "confirmed",
 );
 
-const keypairPath = process.env.KEYPAIR_PATH || path.join(os.homedir(), ".config", "solana", "id.json");
+const keypairPath =
+  process.env.KEYPAIR_PATH ||
+  path.join(os.homedir(), ".config", "solana", "id.json");
 const raw = JSON.parse(fs.readFileSync(keypairPath, "utf-8"));
 const authority = Keypair.fromSecretKey(Uint8Array.from(raw));
 const wallet = new Wallet(authority);
-const provider = new AnchorProvider(connection, wallet, { commitment: "confirmed" });
+const provider = new AnchorProvider(connection, wallet, {
+  commitment: "confirmed",
+});
 
-const STRATA_TOKEN_ID = new PublicKey("BHEacctLwvbEs8NSDEUC8AGPDCK3VvTrXL6snkvV3uzn");
+const STRATA_TOKEN_ID = new PublicKey(
+  "BHEacctLwvbEs8NSDEUC8AGPDCK3VvTrXL6snkvV3uzn",
+);
 const tokenIdl = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "..", "target", "idl", "strata_token.json"), "utf-8")
+  fs.readFileSync(
+    path.join(__dirname, "..", "target", "idl", "strata_token.json"),
+    "utf-8",
+  ),
 );
 const program = new Program(tokenIdl as any, provider);
 
-const [configPDA] = PublicKey.findProgramAddressSync([Buffer.from("tranche_config")], STRATA_TOKEN_ID);
-const [srMintPDA] = PublicKey.findProgramAddressSync([Buffer.from("sr_mint")], STRATA_TOKEN_ID);
+const [configPDA] = PublicKey.findProgramAddressSync(
+  [Buffer.from("tranche_config")],
+  STRATA_TOKEN_ID,
+);
+const [srMintPDA] = PublicKey.findProgramAddressSync(
+  [Buffer.from("sr_mint")],
+  STRATA_TOKEN_ID,
+);
 
-const USER = new PublicKey("AsyDUS3NyDMsHzgXXCiEcSpNsbGScJSuVWbpXosZgabF");
+const USER = new PublicKey("FkQpmxT4LUz7rgQJeUNrPfynMJAf9UM1ZwjLRKcttt5Z");
 const amount = new BN(100 * 1e6); // 100 srUSDC
 
 async function main() {
-  const userAta = getAssociatedTokenAddressSync(srMintPDA, USER, false, TOKEN_2022_PROGRAM_ID);
+  const userAta = getAssociatedTokenAddressSync(
+    srMintPDA,
+    USER,
+    false,
+    TOKEN_2022_PROGRAM_ID,
+  );
   const ataInfo = await connection.getAccountInfo(userAta);
   const tx = new Transaction();
 
@@ -37,8 +67,12 @@ async function main() {
     console.log("Creating Token-2022 ATA for user...");
     tx.add(
       createAssociatedTokenAccountInstruction(
-        authority.publicKey, userAta, USER, srMintPDA, TOKEN_2022_PROGRAM_ID
-      )
+        authority.publicKey,
+        userAta,
+        USER,
+        srMintPDA,
+        TOKEN_2022_PROGRAM_ID,
+      ),
     );
   }
 

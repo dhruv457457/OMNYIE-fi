@@ -6,7 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-strata_core = "Gu9BtKAQ7dHZhig9Z3aESR9hR7xcWTjjGeAN6bHZCBvX"
+strata_core = "3mp3PQySrr9kTWT2SbNSiz57VrSenxAnvTygCkzTY6yJ"
 strata_token = "BHEacctLwvbEs8NSDEUC8AGPDCK3VvTrXL6snkvV3uzn"
 
 [programs.localnet]

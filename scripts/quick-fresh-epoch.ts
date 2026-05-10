@@ -42,33 +42,30 @@ async function main() {
   );
 
   const protocol = await (program.account as any).protocol.fetch(protocolPDA);
-  const latestEpoch = (protocol.epochCount as BN).toNumber() - 1;
-  const epochNumber = Number(process.argv[2] ?? latestEpoch);
-  const additionalYieldUsdc = Number(process.argv[3] ?? 0);
-  const additionalYield = new BN(Math.round(additionalYieldUsdc * 1e6));
+  const newEpochNum = (protocol.epochCount as BN).toNumber() + 1;
 
-  if (!Number.isInteger(epochNumber) || epochNumber < 0) {
-    throw new Error(
-      "Usage: npx tsx scripts/force-mature-epoch.ts <epoch> [additional_yield_usdc]",
-    );
-  }
+  console.log("Creating fresh epoch", newEpochNum, "for testing...");
+
+  const sign = await (program.methods as any)
+    .createEpoch({ sevenDays: {} }, 800, new BN(0), new BN(0))
+    .accounts({ authority: authority.publicKey, protocol: protocolPDA })
+    .rpc();
+
+  console.log("Created epoch tx:", sign);
+  console.log("New epoch number:", newEpochNum);
+  console.log("Now force-mature with yield...");
 
   const [epochPDA] = PublicKey.findProgramAddressSync(
     [
       Buffer.from("epoch"),
       protocolPDA.toBuffer(),
-      new BN(epochNumber).toArrayLike(Buffer, "le", 8),
+      new BN(newEpochNum).toArrayLike(Buffer, "le", 8),
     ],
     STRATA_CORE_ID,
   );
 
-  console.log("Force maturing epoch", epochNumber);
-  console.log("Authority:", authority.publicKey.toBase58());
-  console.log("Epoch PDA:", epochPDA.toBase58());
-  console.log("Additional mock yield:", additionalYieldUsdc, "USDC");
-
-  const sig = await (program.methods as any)
-    .forceMatureEpoch(additionalYield)
+  const sig2 = await (program.methods as any)
+    .forceMatureEpoch(new BN(1_000_000)) // 1 USDC yield
     .accounts({
       authority: authority.publicKey,
       protocol: protocolPDA,
@@ -76,7 +73,8 @@ async function main() {
     })
     .rpc();
 
-  console.log("Force mature tx:", sig);
+  console.log("Force mature tx:", sig2);
+  console.log("✅ Fresh epoch ready for testing withdraw!");
 }
 
 main()

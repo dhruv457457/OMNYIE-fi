@@ -10,15 +10,15 @@ export function Badge({ children, variant = "default", className }: BadgeProps) 
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
+        "inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-medium border shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]",
         {
-          "bg-gray-100 text-gray-700": variant === "default",
-          "bg-emerald-50 text-emerald-700": variant === "success",
-          "bg-amber-50 text-amber-700": variant === "warning",
-          "bg-red-50 text-red-700": variant === "danger",
-          "bg-blue-50 text-blue-700": variant === "info",
+          "border-white/10 bg-white/5 text-white/60": variant === "default",
+          "border-emerald-500/20 bg-emerald-500/10 text-emerald-400": variant === "success",
+          "border-amber-500/20 bg-amber-500/10 text-amber-400": variant === "warning",
+          "border-red-500/20 bg-red-500/10 text-red-400": variant === "danger",
+          "border-blue-500/20 bg-blue-500/10 text-blue-400": variant === "info",
         },
-        className
+        className,
       )}
     >
       {children}

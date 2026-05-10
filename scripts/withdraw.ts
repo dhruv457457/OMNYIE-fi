@@ -9,6 +9,8 @@ const STRATA_CORE_ID = new PublicKey(
   "3mp3PQySrr9kTWT2SbNSiz57VrSenxAnvTygCkzTY6yJ",
 );
 
+const USDC_MINT = new PublicKey("8a6jsDxNAm51EL1DBZbVwt96VLKnVZWd8ama6TDsMoEk");
+
 const coreIdl = JSON.parse(
   fs.readFileSync(
     path.join(__dirname, "..", "target", "idl", "strata_core.json"),
@@ -41,17 +43,9 @@ async function main() {
     STRATA_CORE_ID,
   );
 
-  const protocol = await (program.account as any).protocol.fetch(protocolPDA);
-  const latestEpoch = (protocol.epochCount as BN).toNumber() - 1;
-  const epochNumber = Number(process.argv[2] ?? latestEpoch);
-  const additionalYieldUsdc = Number(process.argv[3] ?? 0);
-  const additionalYield = new BN(Math.round(additionalYieldUsdc * 1e6));
-
-  if (!Number.isInteger(epochNumber) || epochNumber < 0) {
-    throw new Error(
-      "Usage: npx tsx scripts/force-mature-epoch.ts <epoch> [additional_yield_usdc]",
-    );
-  }
+  const epochNumber = Number(process.argv[2] ?? 3);
+  const trancheType = process.argv[3] ?? "senior";
+  const trancheByte = trancheType === "senior" ? 0 : 1;
 
   const [epochPDA] = PublicKey.findProgramAddressSync(
     [
@@ -62,21 +56,57 @@ async function main() {
     STRATA_CORE_ID,
   );
 
-  console.log("Force maturing epoch", epochNumber);
+  const [positionPDA] = PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("position"),
+      epochPDA.toBuffer(),
+      authority.publicKey.toBuffer(),
+      Buffer.from([trancheByte]),
+    ],
+    STRATA_CORE_ID,
+  );
+
+  const [epochVault] = PublicKey.findProgramAddressSync(
+    [Buffer.from("epoch_vault"), epochPDA.toBuffer()],
+    STRATA_CORE_ID,
+  );
+
+  const userUSDC = await anchor.utils.token.associatedAddress(
+    authority.publicKey,
+    USDC_MINT,
+  );
+
+  console.log("Withdrawing from epoch", epochNumber, trancheType);
   console.log("Authority:", authority.publicKey.toBase58());
+  console.log("Protocol PDA:", protocolPDA.toBase58());
   console.log("Epoch PDA:", epochPDA.toBase58());
-  console.log("Additional mock yield:", additionalYieldUsdc, "USDC");
+  console.log("Position PDA:", positionPDA.toBase58());
+  console.log("Epoch Vault:", epochVault.toBase58());
+  console.log("User USDC:", userUSDC.toBase58());
 
-  const sig = await (program.methods as any)
-    .forceMatureEpoch(additionalYield)
-    .accounts({
-      authority: authority.publicKey,
-      protocol: protocolPDA,
-      epoch: epochPDA,
-    })
-    .rpc();
+  try {
+    const sig = await (program.methods as any)
+      .withdraw()
+      .accounts({
+        user: authority.publicKey,
+        protocol: protocolPDA,
+        epoch: epochPDA,
+        position: positionPDA,
+        owner: authority.publicKey,
+        userUsdc: userUSDC,
+        epochVault: epochVault,
+        usdcMint: USDC_MINT,
+        tokenProgram: new PublicKey(
+          "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+        ),
+      })
+      .rpc();
 
-  console.log("Force mature tx:", sig);
+    console.log("Withdraw tx:", sig);
+    console.log("SUCCESS!");
+  } catch (err) {
+    console.error("Withdraw error:", err);
+  }
 }
 
 main()

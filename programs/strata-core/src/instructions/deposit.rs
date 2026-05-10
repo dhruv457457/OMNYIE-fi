@@ -134,10 +134,6 @@ pub fn handler(
         TrancheType::Junior => epoch.junior_total += amount,
     }
 
-    // Update protocol TVL
-    let protocol = &ctx.accounts.protocol;
-    // Note: TVL update happens via reload in a separate ix or cranker
-
     // Create user position
     let clock = Clock::get()?;
     let position = &mut ctx.accounts.position;
@@ -149,7 +145,7 @@ pub fn handler(
     position.claimable_ciphertext = Pubkey::default();
     position.pending_decryption_digest = [0; 32];
     position.pending_decryption_request = Pubkey::default();
-    position.tranche_tokens_minted = amount; // 1:1 for now
+    position.tranche_tokens_minted = amount;
     position.yield_claimed = 0;
     position.withdrawn = false;
     position.deposited_at = clock.unix_timestamp;

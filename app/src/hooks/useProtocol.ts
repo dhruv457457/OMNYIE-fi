@@ -114,7 +114,7 @@ export function getTrancheLabel(t: UserPositionState["trancheType"]): string {
 function getProtocolPDA(): PublicKey {
   const [pda] = PublicKey.findProgramAddressSync(
     [Buffer.from("protocol")],
-    STRATA_CORE_PROGRAM_ID
+    STRATA_CORE_PROGRAM_ID,
   );
   return pda;
 }
@@ -126,7 +126,7 @@ function getEpochPDA(protocolPDA: PublicKey, epochNumber: BN): PublicKey {
       protocolPDA.toBuffer(),
       epochNumber.toArrayLike(Buffer, "le", 8),
     ],
-    STRATA_CORE_PROGRAM_ID
+    STRATA_CORE_PROGRAM_ID,
   );
   return pda;
 }
@@ -202,7 +202,9 @@ export function useEpochs() {
       const protocolPDA = getProtocolPDA();
       let protocolData: any;
       try {
-        protocolData = await (program.account as any).protocol.fetch(protocolPDA);
+        protocolData = await (program.account as any).protocol.fetch(
+          protocolPDA,
+        );
       } catch {
         setEpochs([]);
         return;
@@ -224,7 +226,7 @@ export function useEpochs() {
               ...data,
               publicKey: epochPDA,
             }))
-            .catch(() => null)
+            .catch(() => null),
         );
       }
 
@@ -271,7 +273,9 @@ export function useUserPositions() {
       const protocolPDA = getProtocolPDA();
       let protocolData: any;
       try {
-        protocolData = await (program.account as any).protocol.fetch(protocolPDA);
+        protocolData = await (program.account as any).protocol.fetch(
+          protocolPDA,
+        );
       } catch {
         setPositions([]);
         return;
@@ -290,7 +294,7 @@ export function useUserPositions() {
               publicKey.toBuffer(),
               Buffer.from([trancheByte]),
             ],
-            STRATA_CORE_PROGRAM_ID
+            STRATA_CORE_PROGRAM_ID,
           );
 
           positionFetches.push(
@@ -300,7 +304,7 @@ export function useUserPositions() {
                 ...account,
                 publicKey: positionPDA,
               }))
-              .catch(() => null)
+              .catch(() => null),
           );
         }
       }
@@ -342,23 +346,23 @@ export function useWithdraw() {
       setError(null);
       setTxSig(null);
 
-        try {
-          const provider = new AnchorProvider(connection, wallet as never, {
-            commitment: "confirmed",
-          });
-          const coreProgram = new Program(idl as never, provider);
+      try {
+        const provider = new AnchorProvider(connection, wallet as never, {
+          commitment: "confirmed",
+        });
+        const coreProgram = new Program(idl as never, provider);
 
-          const protocolPDA = getProtocolPDA();
+        const protocolPDA = getProtocolPDA();
         const [epochPDA] = PublicKey.findProgramAddressSync(
           [
             Buffer.from("epoch"),
             protocolPDA.toBuffer(),
             epoch.epochNumber.toArrayLike(Buffer, "le", 8),
           ],
-          STRATA_CORE_PROGRAM_ID
+          STRATA_CORE_PROGRAM_ID,
         );
-          const isSenior = "senior" in position.trancheType;
-          const trancheByte = isSenior ? 0 : 1;
+        const isSenior = "senior" in position.trancheType;
+        const trancheByte = isSenior ? 0 : 1;
         const [positionPDA] = PublicKey.findProgramAddressSync(
           [
             Buffer.from("position"),
@@ -366,21 +370,26 @@ export function useWithdraw() {
             publicKey.toBuffer(),
             Buffer.from([trancheByte]),
           ],
-          STRATA_CORE_PROGRAM_ID
+          STRATA_CORE_PROGRAM_ID,
         );
 
-          const encrypt = deriveEncryptAccounts(publicKey, STRATA_CORE_PROGRAM_ID);
-          const ensureDepositIx = await buildCreateEncryptDepositIx(
-            connection,
-            publicKey,
-            STRATA_CORE_PROGRAM_ID
-          );
-          const sendPartiallySignedTransaction = async (
-            transaction: Transaction,
-            signers: Keypair[]
+        const encrypt = deriveEncryptAccounts(
+          publicKey,
+          STRATA_CORE_PROGRAM_ID,
+        );
+        const ensureDepositIx = await buildCreateEncryptDepositIx(
+          connection,
+          publicKey,
+          STRATA_CORE_PROGRAM_ID,
+        );
+        const sendPartiallySignedTransaction = async (
+          transaction: Transaction,
+          signers: Keypair[],
         ) => {
           if (!wallet.signTransaction) {
-            throw new Error("Connected wallet does not support signTransaction");
+            throw new Error(
+              "Connected wallet does not support signTransaction",
+            );
           }
 
           let lastError: unknown;
@@ -396,18 +405,18 @@ export function useWithdraw() {
             try {
               const signature = await connection.sendRawTransaction(
                 signed.serialize(),
-                { skipPreflight: false }
+                { skipPreflight: false },
               );
               await connection.confirmTransaction(
                 { signature, ...latestBlockhash },
-                "confirmed"
+                "confirmed",
               );
               return signature;
             } catch (sendError: any) {
               lastError = sendError;
               if (
                 !String(sendError?.message || sendError).includes(
-                  "already been processed"
+                  "already been processed",
                 )
               ) {
                 throw sendError;
@@ -419,7 +428,7 @@ export function useWithdraw() {
 
         if (position.decryptionPending) {
           throw new Error(
-            "Private claim is already in progress. Use safe withdraw if you want to exit now."
+            "Private claim is already in progress. Use safe withdraw if you want to exit now.",
           );
         }
 
@@ -443,7 +452,7 @@ export function useWithdraw() {
             epoch: epochPDA,
             position: positionPDA,
             decryptionRequest: decryptionRequest.publicKey,
-            balanceCiphertext: position.depositCiphertext,
+            balanceCiphertext: position.claimableCiphertext,
             encryptProgram: ENCRYPT_PROGRAM_ID,
             encryptConfig: encrypt.configPda,
             encryptDeposit: encrypt.depositPda,
@@ -457,11 +466,13 @@ export function useWithdraw() {
         requestIx.keys = requestIx.keys.map((meta: AccountMeta) =>
           meta.pubkey.equals(decryptionRequest.publicKey)
             ? { ...meta, isSigner: true, isWritable: true }
-            : meta
+            : meta,
         );
         tx.add(requestIx);
 
-        const sig = await sendPartiallySignedTransaction(tx, [decryptionRequest]);
+        const sig = await sendPartiallySignedTransaction(tx, [
+          decryptionRequest,
+        ]);
         setTxSig(sig);
       } catch (e: any) {
         console.error("Withdrawal failed:", e, e?.error, e?.logs);
@@ -471,8 +482,8 @@ export function useWithdraw() {
         setStage("idle");
       }
     },
-      [connection, publicKey, wallet]
-    );
+    [connection, publicKey, wallet],
+  );
 
   const fallbackWithdraw = useCallback(
     async (position: UserPositionState, epoch: EpochState) => {
@@ -497,11 +508,11 @@ export function useWithdraw() {
             protocolPDA.toBuffer(),
             epoch.epochNumber.toArrayLike(Buffer, "le", 8),
           ],
-          STRATA_CORE_PROGRAM_ID
+          STRATA_CORE_PROGRAM_ID,
         );
         const [epochVault] = PublicKey.findProgramAddressSync(
           [Buffer.from("epoch_vault"), epochPDA.toBuffer()],
-          STRATA_CORE_PROGRAM_ID
+          STRATA_CORE_PROGRAM_ID,
         );
 
         const isSenior = "senior" in position.trancheType;
@@ -513,28 +524,28 @@ export function useWithdraw() {
             publicKey.toBuffer(),
             Buffer.from([trancheByte]),
           ],
-          STRATA_CORE_PROGRAM_ID
+          STRATA_CORE_PROGRAM_ID,
         );
 
         const userUSDC = getAssociatedTokenAddressSync(USDC_MINT, publicKey);
         const [configPDA] = PublicKey.findProgramAddressSync(
           [Buffer.from("tranche_config")],
-          STRATA_TOKEN_PROGRAM_ID
+          STRATA_TOKEN_PROGRAM_ID,
         );
         const [srMintPDA] = PublicKey.findProgramAddressSync(
           [Buffer.from("sr_mint")],
-          STRATA_TOKEN_PROGRAM_ID
+          STRATA_TOKEN_PROGRAM_ID,
         );
         const [jrMintPDA] = PublicKey.findProgramAddressSync(
           [Buffer.from("jr_mint")],
-          STRATA_TOKEN_PROGRAM_ID
+          STRATA_TOKEN_PROGRAM_ID,
         );
         const trancheMint = isSenior ? srMintPDA : jrMintPDA;
         const userTrancheAta = getAssociatedTokenAddressSync(
           trancheMint,
           publicKey,
           false,
-          TOKEN_2022_PROGRAM_ID
+          TOKEN_2022_PROGRAM_ID,
         );
         const trancheArg = isSenior ? { senior: {} } : { junior: {} };
         const burnAmount = position.trancheTokensMinted;
@@ -552,11 +563,20 @@ export function useWithdraw() {
             epochVault: epochVault,
             usdcMint: USDC_MINT,
             tokenProgram: new PublicKey(
-              "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+              "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
             ),
           })
           .instruction();
         tx.add(withdrawIx);
+
+        console.log("Transaction accounts:", {
+          user: publicKey?.toBase58(),
+          protocol: protocolPDA?.toBase58(),
+          epoch: epochPDA?.toBase58(),
+          position: positionPDA?.toBase58(),
+          userUsdc: userUSDC?.toBase58(),
+          epochVault: epochVault?.toBase58(),
+        });
 
         const ataInfo = await connection.getAccountInfo(userTrancheAta);
         if (ataInfo && burnAmount.gtn(0)) {
@@ -573,13 +593,32 @@ export function useWithdraw() {
           tx.add(burnIx);
         }
 
-        const sig = await sendTransaction(tx, connection, {
-          skipPreflight: false,
-        });
+        let sig;
+        try {
+          // Try without prefllight check first as it's faster
+          sig = await sendTransaction(tx, connection);
+        } catch (err1: any) {
+          console.log(
+            "First send attempt failed, trying again with skipPreflight=false:",
+            err1.message,
+          );
+          // Retry with explicit settings
+          try {
+            sig = await sendTransaction(tx, connection, {
+              skipPreflight: false,
+            });
+          } catch (err2: any) {
+            console.error("Both send attempts failed:", {
+              attempt1: err1.message,
+              attempt2: err2.message,
+            });
+            throw err2;
+          }
+        }
         const latestBlockhash = await connection.getLatestBlockhash();
         await connection.confirmTransaction(
           { signature: sig, ...latestBlockhash },
-          "confirmed"
+          "confirmed",
         );
         setTxSig(sig);
       } catch (e: any) {
@@ -590,8 +629,15 @@ export function useWithdraw() {
         setStage("idle");
       }
     },
-    [connection, publicKey, sendTransaction, wallet]
+    [connection, publicKey, sendTransaction, wallet],
   );
 
-  return { requestPrivateClaim, fallbackWithdraw, withdrawing, stage, error, txSig };
+  return {
+    requestPrivateClaim,
+    fallbackWithdraw,
+    withdrawing,
+    stage,
+    error,
+    txSig,
+  };
 }

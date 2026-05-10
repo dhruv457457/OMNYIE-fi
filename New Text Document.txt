@@ -1,0 +1,26 @@
+"Let me show you what SIEGE does."
+
+[Open terminal]
+
+$ npx siege scan --program-id KLend2g3cP87fffoy8q1mQqGKjrL1AyL9M749VAtoLkq
+
+[ASCII banner appears]
+[Fork spinner: "Forking Solana mainnet at slot #284,932,441..."]
+[TVL detected: "$4,284,320"]
+
+[Attacks start running — show each one]
+01 Flash Loan + Oracle Manipulation...  [pause]  CRITICAL 🔴
+   Extractable: ~$1,840,000
+
+[Judges lean forward]
+
+"Sec3 X-ray, Soteria, Trident — none of them caught this."
+"Because it's not a code bug. It's an economic attack."
+"Loopscale lost $5.8M to this exact attack in April 2025."
+"SIEGE simulates it in 47 seconds."
+
+[Show the fix suggestion: 3 lines of Anchor code]
+
+"The fix is right there. In the same report."
+"Free to try. $199/month for the full 12 attacks."
+"That's the deal."

@@ -1,8 +1,10 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { Card, StatCard } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { ConnectWalletPrompt } from "@/components/ConnectWalletPrompt";
 import { useWallet } from "@solana/wallet-adapter-react";
 import {
   useUserPositions,
@@ -19,10 +21,12 @@ function PositionCard({
   pos,
   epoch,
   onWithdrawn,
+  index,
 }: {
   pos: UserPositionState;
   epoch?: EpochState;
   onWithdrawn: () => void;
+  index: number;
 }) {
   const trancheLabel = getTrancheLabel(pos.trancheType);
   const isSenior = "senior" in pos.trancheType;
@@ -41,79 +45,81 @@ function PositionCard({
   }
 
   return (
-    <Card className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-      <div className="flex items-center gap-4">
-        <div
-          className={`flex h-12 w-12 items-center justify-center rounded-xl ${
-            isSenior
-              ? "bg-blue-100 text-blue-700"
-              : "bg-emerald-100 text-emerald-700"
-          } text-sm font-bold`}
-        >
-          #{epochNum}
-        </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="font-medium">Epoch #{epochNum}</span>
-            <Badge variant={isSenior ? "info" : "success"}>
-              {trancheLabel}
-            </Badge>
-            <Badge
-              variant={
-                epochStatus === "Matured"
-                  ? "success"
-                  : epochStatus === "Active"
-                    ? "warning"
-                    : "default"
-              }
-            >
-              {epochStatus}
-            </Badge>
-            {pos.withdrawn && <Badge variant="default">Withdrawn</Badge>}
-          </div>
-          <p className="text-sm text-gray-400">
-            {pos.trancheTokensMinted.toNumber() / 1e6}{" "}
-            {isSenior ? "srUSDC" : "jrUSDC"}
-          </p>
-          <p className="mt-1 text-xs text-[var(--omnyie-red)]">
-            Encrypt privacy: encrypted deposit mirror stored on-chain; safe withdrawal remains available even if decryptor is delayed
-          </p>
-          {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
-          {txSig && (
-            <p className="mt-1 text-xs text-emerald-600">
-              Transaction sent.{" "}
-              <a
-                href={`https://explorer.solana.com/tx/${txSig}?cluster=devnet`}
-                target="_blank"
-                rel="noreferrer"
-                className="underline"
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.08 }}
+      whileHover={{ y: -2 }}
+    >
+      <Card className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex items-center gap-4">
+          <motion.div
+            whileHover={{ rotate: [0, -5, 5, 0] }}
+            transition={{ duration: 0.3 }}
+            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${
+              isSenior
+                ? "bg-blue-500/10 border border-blue-500/20 text-blue-400"
+                : "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400"
+            } text-sm font-bold`}
+          >
+            #{epochNum}
+          </motion.div>
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-medium text-white/90">Epoch #{epochNum}</span>
+              <Badge variant={isSenior ? "info" : "success"}>{trancheLabel}</Badge>
+              <Badge
+                variant={
+                  epochStatus === "Matured"
+                    ? "success"
+                    : epochStatus === "Active"
+                      ? "warning"
+                      : "default"
+                }
               >
-                View tx
-              </a>
+                {epochStatus}
+              </Badge>
+              {pos.withdrawn && <Badge variant="default">Withdrawn</Badge>}
+            </div>
+            <p className="text-sm text-white/40 mt-0.5">
+              {pos.trancheTokensMinted.toNumber() / 1e6} {isSenior ? "srUSDC" : "jrUSDC"}
             </p>
-          )}
+            {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
+            {txSig && (
+              <p className="mt-1 text-xs text-emerald-400">
+                Transaction sent.{" "}
+                <a
+                  href={`https://explorer.solana.com/tx/${txSig}?cluster=devnet`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline"
+                >
+                  View tx
+                </a>
+              </p>
+            )}
+          </div>
         </div>
-      </div>
 
-      <div className="flex items-center gap-8">
-        <div className="text-right">
-          <p className="text-xs text-gray-400">Deposited</p>
-          <p className="font-medium">
-            {pos.decryptionPending ? "Private" : `$${formatNumber(deposited)}`}
-          </p>
-        </div>
-        <div className="text-right">
-          <p className="text-xs text-gray-400">APY</p>
-          <p className="font-medium">{isSenior ? apy : "Variable"}</p>
-        </div>
-        <div className="text-right">
-          <p className="text-xs text-gray-400">Yield Claimed</p>
-          <p className="font-medium text-emerald-600">
-            ${formatNumber(pos.yieldClaimed.toNumber() / 1e6)}
-          </p>
-        </div>
-        {canWithdraw && (
-          <div className="flex flex-col items-end gap-2">
+        <div className="flex items-center gap-6 md:gap-8 flex-wrap">
+          <div className="text-right">
+            <p className="text-xs text-white/40">Deposited</p>
+            <p className="font-medium text-white/80">
+              {pos.decryptionPending ? "Private" : `$${formatNumber(deposited)}`}
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="text-xs text-white/40">APY</p>
+            <p className="font-medium text-white/80">{isSenior ? apy : "Variable"}</p>
+          </div>
+          <div className="text-right">
+            <p className="text-xs text-white/40">Yield Claimed</p>
+            <p className="font-medium text-emerald-400">
+              ${formatNumber(pos.yieldClaimed.toNumber() / 1e6)}
+            </p>
+          </div>
+          {canWithdraw && (
             <Button
               variant="primary"
               size="sm"
@@ -124,130 +130,114 @@ function PositionCard({
                 ? "Withdrawing..."
                 : "Withdraw Safely"}
             </Button>
-          </div>
-        )}
-      </div>
-    </Card>
+          )}
+        </div>
+      </Card>
+    </motion.div>
   );
 }
 
 export default function PortfolioPage() {
   const { connected } = useWallet();
+
   const {
     positions,
     loading: positionsLoading,
+    error: positionsError,
     refresh: refreshPositions,
   } = useUserPositions();
-  const { epochs, loading: epochsLoading } = useEpochs();
-
+  const { epochs, loading: epochsLoading, error: epochsError } = useEpochs();
   const loading = positionsLoading || epochsLoading;
 
   if (!connected) {
-    return (
-      <div className="flex flex-col items-center justify-center py-24 text-center">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--omnyie-red-50)]">
-          <svg
-            className="h-8 w-8 text-[var(--omnyie-red)]"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-            />
-          </svg>
-        </div>
-        <h2 className="text-xl font-semibold">Connect Your Wallet</h2>
-        <p className="mt-2 max-w-md text-gray-500">
-          Connect your Solana wallet to view your yield tranche positions,
-          earned yield, and withdrawal options.
-        </p>
-      </div>
-    );
+    return <ConnectWalletPrompt />;
   }
 
   const epochMap = new Map<string, EpochState>();
   epochs.forEach((e) => epochMap.set(e.publicKey.toBase58(), e));
 
   const totalDeposited = positions.reduce(
-    (s, p) => s + p.depositedAmount.toNumber() / 1e6,
-    0
+    (s, p) => s + p.depositedAmount.toNumber() / 1e6, 0,
   );
   const totalYield = positions.reduce(
-    (s, p) => s + p.yieldClaimed.toNumber() / 1e6,
-    0
+    (s, p) => s + p.yieldClaimed.toNumber() / 1e6, 0,
   );
   const activeCount = positions.filter((p) => !p.withdrawn).length;
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Portfolio</h1>
-        <p className="text-gray-500">Your yield tranche positions</p>
-      </div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="space-y-6"
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <h1 className="text-3xl font-bold tracking-tight glow-text">Portfolio</h1>
+        <p className="text-white/50 text-sm mt-1">Your yield tranche positions</p>
+      </motion.div>
 
-      {loading ? (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {[...Array(4)].map((_, i) => (
-            <div
-              key={i}
-              className="h-24 animate-pulse rounded-2xl border border-gray-100 bg-white"
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <StatCard
-            label="Total Deposited"
-            value={`$${formatNumber(totalDeposited)}`}
-          />
-          <StatCard
-            label="Total Yield Earned"
-            value={`$${formatNumber(totalYield)}`}
-            sub="Across all epochs"
-            trend="up"
-          />
-          <StatCard label="Active Positions" value={activeCount.toString()} />
-          <StatCard
-            label="Total Positions"
-            value={positions.length.toString()}
-          />
-        </div>
-      )}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.05 }}
+        className="grid grid-cols-2 gap-4 md:grid-cols-4"
+      >
+        <StatCard
+          loading={loading}
+          label="Total Deposited"
+          value={`$${formatNumber(totalDeposited)}`}
+        />
+        <StatCard
+          loading={loading}
+          label="Total Yield Earned"
+          value={`$${formatNumber(totalYield)}`}
+          sub="Across all epochs"
+          trend="up"
+        />
+        <StatCard
+          loading={loading}
+          label="Active Positions"
+          value={activeCount.toString()}
+        />
+        <StatCard
+          loading={loading}
+          label="Total Positions"
+          value={positions.length.toString()}
+        />
+      </motion.div>
 
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold">Your Positions</h2>
+        <h2 className="text-lg font-semibold text-white/90">Your Positions</h2>
 
         {loading ? (
           <div className="space-y-4">
             {[...Array(2)].map((_, i) => (
-              <div
-                key={i}
-                className="h-24 animate-pulse rounded-2xl border border-gray-100 bg-white"
-              />
+              <div key={i} className="h-24 rounded-2xl shimmer" />
             ))}
           </div>
         ) : positions.length === 0 ? (
           <Card className="py-12 text-center">
-            <p className="text-gray-400">No positions yet</p>
-            <p className="mt-1 text-sm text-gray-400">
-              Deposit into an epoch to start earning yield.
+            <p className="text-white/50">
+              {positionsError || epochsError ? "Could not load positions" : "No positions yet"}
+            </p>
+            <p className="mt-1 text-sm text-white/30">
+              {positionsError || epochsError || "Deposit into an on-chain epoch to start earning yield."}
             </p>
           </Card>
         ) : (
-          positions.map((pos) => (
+          positions.map((pos, i) => (
             <PositionCard
               key={pos.publicKey.toBase58()}
               pos={pos}
               epoch={epochMap.get(pos.epoch.toBase58())}
               onWithdrawn={refreshPositions}
+              index={i}
             />
           ))
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
